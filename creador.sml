@@ -43,16 +43,27 @@ end;
 (* Agregar un nuevo libro al archivo *)
 fun agregarLibro ruta = let
     val fd = TextIO.openAppend ruta
-    val codigo = eliminarSaltosDeLinea (solicitarNumero "Código del libro (ej: LIB1234)")
-    val fecha = eliminarSaltosDeLinea (solicitarNumero "Fecha de publicación (YYYY-MM-DD)")
-    val autor = eliminarSaltosDeLinea (print "Autor: "; obtenerEntradaUsuario ())
-    val genero = eliminarSaltosDeLinea (print "Género: "; obtenerEntradaUsuario ())
+
+    val _ = print "Código del libro (ej: LIB1234): "
+    val codigo = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
+
+    val _ = print "Fecha de publicación (YYYY-MM-DD): "
+    val fecha = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
+
+    val _ = print "Autor: "
+    val autor = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
+
+    val _ = print "Género: "
+    val genero = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
+
     val copias = solicitarNumero "Copias disponibles"
+
     val _ = TextIO.output(fd, codigo ^ "," ^ fecha ^ "," ^ autor ^ "," ^ genero ^ "," ^ copias ^ "\n")
     val _ = TextIO.closeOut fd
 in
     print "Libro agregado exitosamente.\n"
 end;
+
 
 (* Menú principal del Creador *)
 fun menuCreador ruta = let
