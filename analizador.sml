@@ -12,6 +12,22 @@ Estatus: Excelente
 fun obtenerEntradaUsuario () = Option.getOpt (TextIO.inputLine TextIO.stdIn, "");
 fun eliminarSaltosDeLinea s = String.translate (fn #"\n" => "" | c => String.str c) s;
 
+(* Función para validar números enteros *)
+fun esEntero s = 
+    case Int.fromString s of
+        SOME _ => true
+      | NONE => false;
+
+(* Solicitar campo numérico válido *)
+fun solicitarNumero mensaje = let
+    val _ = print (mensaje ^ ": ")
+    val entrada = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
+in
+    if esEntero entrada then entrada
+    else (print "¡Ingrese un número válido!\n"; solicitarNumero mensaje)
+end;
+
+
 (* Leer archivo CSV *)
 fun leerCSV ruta = let
     val canal = TextIO.openIn ruta
