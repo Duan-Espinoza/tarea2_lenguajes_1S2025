@@ -5,7 +5,6 @@ Estudiante: [Duan Antonio Espinoza Olivares]
 Carnet: [2019079490]
 Tarea: #2
 Fecha de entrega: [9/4/2025]
-Estatus: Excelente
 *)
 
 (* Función para obtener entrada del usuario *)
