@@ -27,7 +27,15 @@ in
 end;
 
 
-(* Leer archivo CSV *)
+
+(* 
+leerCSV
+Entrada: ruta -> dirección del archivo CSV
+Salida: Lista de listas con los datos del CSV
+Restricciones: El archivo debe existir y tener formato válido
+Objetivo: Convierte un archivo CSV en una estructura de datos. 
+*)
+
 fun leerCSV ruta = let
     val canal = TextIO.openIn ruta
     fun leerLineas canal =
@@ -40,7 +48,15 @@ in
     List.map (String.tokens (fn c => c = #",")) lineas
 end;
 
-(* Mostrar libros en formato de tabla *)
+
+(* 
+imprimirLibros
+Entrada: libros -> lista de libros (cada libro es una lista de strings)
+Salida: Ninguna (imprime una tabla en consola)
+Restricciones: Cada libro debe tener 5 campos
+Objetivo: Muestra los libros en formato tabular. 
+*)
+
 fun imprimirLibros libros = let
     val _ = print "\nCódigo\t| Fecha\t\t| Autor\t\t| Género\t| Copias\n"
     val _ = print "--------------------------------------------------------\n"
@@ -54,7 +70,14 @@ in
     List.app imprimir libros
 end;
 
-(* a. Libros populares por rango de copias *)
+
+(* 
+mostrarPopulares
+Entrada: libros -> lista de libros
+Salida: Ninguna (imprime libros filtrados y ordenados)
+Restricciones: min y max deben ser enteros no negativos
+Objetivo: Filtra libros por rango de copias y los ordena descendente. 
+*)
 fun mostrarPopulares libros = let
     val min = valOf (Int.fromString (solicitarNumero "Mínimo de copias"))
     val max = valOf (Int.fromString (solicitarNumero "Máximo de copias"))
@@ -69,7 +92,13 @@ in
     imprimirLibros ordenados
 end;
 
-(* b. Autores con más de 5 libros *)
+(* 
+autoresPopulares
+Entrada: libros -> lista de libros
+Salida: Ninguna (imprime autores con 5+ libros)
+Restricciones: Ninguna
+Objetivo: Identifica autores con al menos 5 libros registrados. 
+*)
 fun autoresPopulares libros = let
     val conteo = foldl (fn (libro, dict) =>
         let val autor = List.nth(libro,2)
@@ -84,7 +113,15 @@ in
 end;
 
 
-(* Función para buscar libros por código o autor *)
+
+(* 
+buscarLibros
+Entrada: libros -> lista de libros
+Salida: Ninguna (imprime resultados de búsqueda)
+Restricciones: La consulta debe ser un código (LIBXXXX) o nombre de autor
+Objetivo: Busca libros por código o autor (insensible a mayúsculas). 
+*)
+
 fun buscarLibros libros = let
     val _ = print "Ingrese código (LIBXXXX) o autor: "
     val consulta = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
@@ -103,7 +140,14 @@ in
 end;
 
 
-(* Función para contar libros por género *)
+
+(* 
+contarPorGenero
+Entrada: libros -> lista de libros
+Salida: Ninguna (imprime el conteo)
+Restricciones: El género debe existir en el catálogo
+Objetivo: Cuenta los libros de un género específico. 
+*)
 fun contarPorGenero libros = let
     val _ = print "Ingrese género: "
     val genero = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
@@ -118,7 +162,14 @@ end;
 
 (* Funciones auxiliares para el resumen *)
 
-(* 1. Cantidad de libros por género *)
+
+(* 
+contarLibrosPorGenero
+Entrada: libros -> lista de libros
+Salida: Lista de tuplas (género, cantidad)
+Restricciones: Ninguna
+Objetivo: Calcula la cantidad de libros por cada género. 
+*)
 fun contarLibrosPorGenero libros = let
     val generos = List.map (fn libro => List.nth(libro, 3)) libros
     val conteo = foldl (fn (g, dict) =>
@@ -130,21 +181,42 @@ in
     conteo
 end;
 
-(* Determina la cantidad máxima de copias *)
+
+(* 
+libroMaxCopias 
+Entrada: libros -> lista de libros
+Salida: Libro con más copias (lista de strings)
+Restricciones: La lista no debe estar vacía
+Objetivo: Determina el libro con la cantidad máxima/mínima de copias. 
+*)
 fun libroMaxCopias libros = 
     hd (ListMergeSort.sort (fn (a, b) =>
         valOf (Int.fromString (List.nth(a, 4))) < valOf (Int.fromString (List.nth(b, 4)))
     ) libros);
 
 
-(* Determina la cantidad minima de copias *)
+
+(* 
+libroMinCopias
+Entrada: libros -> lista de libros
+Salida: Libro con menos copias (lista de strings)
+Restricciones: La lista no debe estar vacía
+Objetivo: Determina el libro con la cantidad máxima/mínima de copias. 
+*)
 fun libroMinCopias libros = 
     hd (ListMergeSort.sort (fn (a, b) =>
         valOf (Int.fromString (List.nth(a, 4))) > valOf (Int.fromString (List.nth(b, 4)))
     ) libros);
 
 
-(* 4. Autor con más libros *)
+
+(* 
+autorMasLibros 
+Entrada: libros -> lista de libros
+Salida: Tupla (autor, cantidad)
+Restricciones: Ninguna
+Objetivo: Identifica al autor con más libros registrados. 
+*)
 fun autorMasLibros libros = let
     val conteoAutores = foldl (fn (libro, dict) =>
         let val autor = List.nth(libro, 2)
@@ -159,7 +231,13 @@ in
     (autorMax, countMax)
 end;
 
-(* 5. Género con más libros *)
+(* 
+generoMasLibros
+Entrada: libros -> lista de libros
+Salida: Tupla (género, cantidad)
+Restricciones: Ninguna
+Objetivo: Identifica al género con más libros registrados. 
+*)
 fun generoMasLibros libros = let
     val conteoGeneros = contarLibrosPorGenero libros
     val (generoMax, countMax) = foldl (fn ((g, c), (gMax, cMax)) =>
@@ -169,7 +247,14 @@ in
     (generoMax, countMax)
 end;
 
-(* Función para mostrar el resumen *)
+
+(* 
+mostrarResumen
+Entrada: libros -> lista de libros
+Salida: Ninguna (imprime un informe detallado)
+Restricciones: Ninguna
+Objetivo: Genera un resumen estadístico de la biblioteca. 
+*)
 fun mostrarResumen libros = let
     val porGenero = contarLibrosPorGenero libros
     val maxCopias = libroMaxCopias libros
@@ -190,8 +275,14 @@ end;
 
 
 
-(* Menú principal del Analizador *)
-(* Menú principal del Analizador *)
+
+(* 
+menuAnalizador
+Entrada: libros -> lista de libros
+Salida: Ninguna (interacción por consola)
+Restricciones: Opciones válidas: a, b, c, d, e, f
+Objetivo: Menú interactivo para análisis de datos. 
+*)
 fun menuAnalizador libros = let
     val _ = print "\n--- Menú Analizador ---\n"
     val _ = print "a. Libros populares\n"
@@ -212,7 +303,15 @@ in
       | _ => (print "Opción inválida.\n"; menuAnalizador libros)
 end;
 
-(* Función principal *)
+
+(* 
+main
+Entrada: Ninguna
+Salida: Ninguna (ejecuta el programa)
+Restricciones: El archivo CSV debe existir
+Objetivo: Punto de entrada del programa Analizador. 
+*)
+
 fun main () = let
     val _ = print "Ruta del archivo CSV: "
     val ruta = eliminarSaltosDeLinea (obtenerEntradaUsuario ())
